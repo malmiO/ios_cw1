@@ -253,7 +253,7 @@ extension HomeView {
         VStack(alignment: .leading, spacing: 8) {
             
             ZStack(alignment: .topLeading) {
-                // Placeholder image — keep as placeholder
+                //  image doctor
                 if UIImage(named: "doctor_placeholder") != nil {
                     Image("doctor_placeholder")
                         .resizable()
