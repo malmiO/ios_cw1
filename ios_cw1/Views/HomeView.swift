@@ -6,72 +6,78 @@
 //
 
 import SwiftUI
-import UIKit
 
 struct HomeView: View {
     
     @State private var selectedTab: Int = 0
     @State private var animatePulse: Bool = false
+    @State private var showBookingFlow = false
     
     var body: some View {
-        ZStack(alignment: .top) {
-            
-            // Background 
-            VStack(spacing: 0) {
-                Color(.systemGroupedBackground)
+        NavigationStack {
+            ZStack(alignment: .top) {
                 
-                LinearGradient(
-                    colors: [
-                        Color.blue.opacity(0.35),
-                        Color.blue.opacity(0.20)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .frame(height: 420)
-                .clipShape(
-                    RoundedCorner(radius: 40,
-                                  corners: [.topLeft, .topRight])
-                )
-            }
-            .ignoresSafeArea()
-            
-            
-            // SCROLLABLE CONTENT
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 24) {
+                // Background
+                VStack(spacing: 0) {
+                    Color(.systemGroupedBackground)
                     
-                    Spacer()
-                        .frame(height: 30) // content below header
-                    
-                    activeQueueCard
-                    quickServicesSection
-                    bookAppointmentCard
-                    topDoctorsSection
-                    
-                    Spacer(minLength: 160)
+                    LinearGradient(
+                        colors: [
+                            Color.blue.opacity(0.35),
+                            Color.blue.opacity(0.20)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .frame(height: 420)
+                    .clipShape(
+                        RoundedCorner(radius: 40,
+                                      corners: [.topLeft, .topRight])
+                    )
                 }
-                .padding(.horizontal, 20)
+                .ignoresSafeArea()
+                
+                // SCROLLABLE CONTENT
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 24) {
+                        
+                        Spacer()
+                            .frame(height: 30)
+                        
+                        activeQueueCard
+                        quickServicesSection
+                        bookAppointmentCard
+                        topDoctorsSection
+                        
+                        Spacer(minLength: 160)
+                    }
+                    .padding(.horizontal, 20)
+                }
+                
+                // header - sticky
+                HeaderView()
+                    .padding(.top, 0)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 0.5)
+                    .background(Color.white)
             }
-            
-            
-            // header - sticky
-            HeaderView()
-                .padding(.top, 0)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 0.5)
-                .background(Color.white)
+            .safeAreaInset(edge: .bottom) {
+                VStack(spacing: 8) {
+                    DirectionsBarView()
+                        .padding(.horizontal, 16)
+                    FloatingNavBarView(selectedTab: $selectedTab)
+                }
+            }
         }
-        .safeAreaInset(edge: .bottom) {
-            VStack(spacing: 8) {
-                DirectionsBarView()
-                    .padding(.horizontal, 16)
-                FloatingNavBarView(selectedTab: $selectedTab)
+        .fullScreenCover(isPresented: $showBookingFlow) {
+            NavigationStack {
+                ChooseDoctorView(selectedTab: $selectedTab, onFlowComplete: {
+                    showBookingFlow = false
+                })
             }
         }
     }
 }
-
 
 extension HomeView {
     
@@ -130,7 +136,9 @@ extension HomeView {
     var bookAppointmentCard: some View {
         VStack(spacing: 12) {
             
-            Button(action: {}) {
+            Button(action: {
+                showBookingFlow = true
+            }) {
                 Text("Book Appointment")
                     .font(.headline)
                     .foregroundColor(.white)
@@ -173,7 +181,6 @@ extension HomeView {
                 .fill(Color.white)
         )
         .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
-    
     }
     
     func quickServiceItem(icon: String, title: String, color: Color) -> some View {
@@ -217,7 +224,6 @@ extension HomeView {
         VStack(alignment: .leading, spacing: 8) {
             
             ZStack(alignment: .topLeading) {
-                //  image doctor
                 if UIImage(named: "doctor_placeholder") != nil {
                     Image("doctor_placeholder")
                         .resizable()
@@ -254,7 +260,6 @@ extension HomeView {
         .frame(width: 220)
     }
 }
-
 
 #Preview {
     HomeView()
