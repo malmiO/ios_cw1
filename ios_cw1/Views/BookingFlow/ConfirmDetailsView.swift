@@ -20,7 +20,6 @@ struct ConfirmDetailsView: View {
     @State private var originalPhone = ""
     @State private var isEditing = false
 
-    // Profile data from AppStorage
     @AppStorage("userName") private var storedName = ""
     @AppStorage("userPhoneNumber") private var storedPhone = "+94 77 123 4567"
 
@@ -266,10 +265,8 @@ struct ConfirmDetailsView: View {
         .navigationBarHidden(true)
         .animation(.easeInOut(duration: 0.2), value: isEditing)
         .onAppear {
-            // Initialize with stored profile data if not already set
             if name.isEmpty { name = storedName }
             if phone.isEmpty { phone = storedPhone }
-            // Also set originals for edit mode
             originalName = name
             originalPhone = phone
         }
