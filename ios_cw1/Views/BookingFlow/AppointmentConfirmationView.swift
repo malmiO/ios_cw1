@@ -15,8 +15,10 @@ struct AppointmentConfirmationView: View {
     let patientPhone: String
     let location: String
     let totalAmount: Double
+    var onFlowComplete: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var appointmentStore: AppointmentStore
 
     private var formattedDateTime: String {
         let dateFormatter = DateFormatter()
@@ -163,7 +165,24 @@ struct AppointmentConfirmationView: View {
             // Back to Home button
             VStack {
                 Button(action: {
-                    dismiss()
+                    print("onFlowComplete is \(onFlowComplete == nil ? "nil" : "set")")
+                    let appointment = AppointmentDetails(
+                        doctorName: doctor.fullName,
+                        specialty: doctor.specialty,
+                        dateTime: formattedDateTime,
+                        location: location,
+                        patientName: patientName.isEmpty ? "Peter John" : patientName,
+                        patientPhone: patientPhone.isEmpty ? "+94 77 123 4567" : patientPhone,
+                        totalAmount: totalAmount
+                    )
+                    appointmentStore.currentAppointment = appointment
+                    
+                    if let onFlowComplete = onFlowComplete {
+                        onFlowComplete()
+                    } else {
+                        print("onFlowComplete is nil – falling back to dismiss")
+                        dismiss()
+                    }
                 }) {
                     Text("Back to Home")
                         .font(.headline)
@@ -180,5 +199,36 @@ struct AppointmentConfirmationView: View {
             }
         }
         .navigationBarHidden(true)
+    }
+}
+
+#Preview {
+    NavigationStack {
+        AppointmentConfirmationView(
+            doctor: Doctor(
+                firstName: "Jenny",
+                lastName: "Wilson",
+                degree: "DMD",
+                specialty: "General Physician",
+                rating: 4.9,
+                imageName: nil,
+                availableTime: "Today, 9:30 AM",
+                specialtyType: .general,
+                experience: "7 Years",
+                patients: "5.9k+",
+                reviews: "3.8k+",
+                fee: 2300.00,
+                timeSlots: [],
+                bio: "Sample bio",
+                availability: "Monday–Friday"
+            ),
+            selectedDate: Date(),
+            selectedTimeSlot: "01:00 PM",
+            patientName: "Peter John",
+            patientPhone: "+94 77 123 4567",
+            location: "Room 12, 1st Floor, Main Wing",
+            totalAmount: 2300.00
+        )
+        .environmentObject(AppointmentStore())
     }
 }

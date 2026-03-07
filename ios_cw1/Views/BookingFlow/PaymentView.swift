@@ -15,6 +15,7 @@ struct PaymentView: View {
     let patientPhone: String
     let location: String
     let totalAmount: Double
+    var onFlowComplete: (() -> Void)? = nil
 
     @State private var navigateToCardPayment = false
     @State private var navigateToApplePayIntro = false
@@ -46,9 +47,18 @@ struct PaymentView: View {
 
     var body: some View {
         ZStack {
- 
+            // Navigation links
             NavigationLink(
-                destination: CardPaymentView(totalAmount: totalAmount),
+                destination: CardPaymentView(
+                    doctor: doctor,
+                    selectedDate: selectedDate,
+                    selectedTimeSlot: selectedTimeSlot,
+                    patientName: patientName,
+                    patientPhone: patientPhone,
+                    location: location,
+                    totalAmount: totalAmount,
+                    onFlowComplete: onFlowComplete
+                ),
                 isActive: $navigateToCardPayment
             ) { EmptyView() }
 
@@ -60,27 +70,28 @@ struct PaymentView: View {
                     patientName: patientName,
                     patientPhone: patientPhone,
                     location: location,
-                    totalAmount: totalAmount
+                    totalAmount: totalAmount,
+                    onFlowComplete: onFlowComplete   
                 ),
                 isActive: $navigateToApplePayIntro
             ) { EmptyView() }
 
+
             NavigationLink(
-                destination: CounterConfirmationView(
+                destination: QueueDetailsView(
                     doctor: doctor,
                     selectedDate: selectedDate,
                     selectedTimeSlot: selectedTimeSlot,
                     patientName: patientName,
                     patientPhone: patientPhone,
                     location: location,
-                    totalAmount: totalAmount
+                    totalAmount: totalAmount,
+                    onFlowComplete: onFlowComplete
                 ),
                 isActive: $navigateToCounterConfirmation
             ) { EmptyView() }
 
-
             VStack(spacing: 0) {
-
                 HStack {
                     Button(action: { dismiss() }) {
                         Image(systemName: "chevron.left")
@@ -128,7 +139,6 @@ struct PaymentView: View {
                                         selectedMethod = method
                                     }) {
                                         HStack(spacing: 16) {
-                                            
                                             ZStack {
                                                 Circle()
                                                     .stroke(selectedMethod == method ? Color.blue : Color.gray, lineWidth: 2)
@@ -140,13 +150,11 @@ struct PaymentView: View {
                                                 }
                                             }
 
-                                            // Icon
                                             Image(systemName: method.icon)
                                                 .font(.title3)
                                                 .foregroundColor(.blue)
                                                 .frame(width: 32)
 
-                                            
                                             VStack(alignment: .leading, spacing: 2) {
                                                 Text(method.rawValue)
                                                     .font(.body)

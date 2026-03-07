@@ -9,12 +9,12 @@ import SwiftUI
 
 struct ChooseDoctorView: View {
     @Binding var selectedTab: Int
+    var onFlowComplete: (() -> Void)? = nil
 
     @State private var searchText = ""
     @State private var selectedSpecialty = "All Specialists"
 
     let specialties = ["All Specialists", "General", "Cardiology"]
-
     let doctors = MockData.doctors
 
     var body: some View {
@@ -48,7 +48,7 @@ struct ChooseDoctorView: View {
                     // Doctor list with navigation
                     VStack(alignment: .leading, spacing: 16) {
                         ForEach(filteredDoctors) { doctor in
-                            NavigationLink(destination: DoctorDetailView(doctor: doctor)) {
+                            NavigationLink(destination: DoctorDetailView(doctor: doctor, onFlowComplete: onFlowComplete)) {  // <-- Pass closure
                                 DoctorCard(doctor: doctor)
                             }
                             .buttonStyle(PlainButtonStyle())
@@ -69,16 +69,14 @@ struct ChooseDoctorView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    // Filter doctors
+    // Filter doctors (unchanged)
     var filteredDoctors: [Doctor] {
         var result = doctors
-
         if selectedSpecialty != "All Specialists" {
             if let specialtyEnum = SpecialtyType(rawValue: selectedSpecialty) {
                 result = result.filter { $0.specialtyType == specialtyEnum }
             }
         }
-
         if !searchText.isEmpty {
             result = result.filter {
                 $0.firstName.localizedCaseInsensitiveContains(searchText) ||
@@ -86,7 +84,6 @@ struct ChooseDoctorView: View {
                 $0.specialty.localizedCaseInsensitiveContains(searchText)
             }
         }
-
         return result
     }
 }

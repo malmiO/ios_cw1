@@ -11,6 +11,7 @@ struct ConfirmDetailsView: View {
     let doctor: Doctor
     let selectedDate: Date
     let selectedTimeSlot: String
+    var onFlowComplete: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -118,7 +119,6 @@ struct ConfirmDetailsView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
 
                         if isEditing {
-
                             VStack(spacing: 16) {
                                 // Name field
                                 VStack(alignment: .leading, spacing: 6) {
@@ -169,7 +169,6 @@ struct ConfirmDetailsView: View {
                                 .cornerRadius(20)
 
                                 Button("Save") {
-                                
                                     originalName = name
                                     originalPhone = phone
                                     isEditing = false
@@ -184,7 +183,6 @@ struct ConfirmDetailsView: View {
                             }
                             .padding(.top, 8)
                         } else {
-                           
                             VStack(spacing: 16) {
                                 HStack {
                                     Text("Name")
@@ -207,7 +205,6 @@ struct ConfirmDetailsView: View {
                             }
                             .padding(.horizontal, 4)
 
-                            // Edit button
                             Button(action: {
                                 originalName = name
                                 originalPhone = phone
@@ -240,7 +237,8 @@ struct ConfirmDetailsView: View {
                             selectedDate: selectedDate,
                             selectedTimeSlot: selectedTimeSlot,
                             patientName: name.isEmpty ? "Peter John" : name,
-                            patientPhone: phone.isEmpty ? "+94 77 123 4567" : phone
+                            patientPhone: phone.isEmpty ? "+94 77 123 4567" : phone,
+                            onFlowComplete: onFlowComplete   
                         )
                     ) {
                         Text("Proceed")

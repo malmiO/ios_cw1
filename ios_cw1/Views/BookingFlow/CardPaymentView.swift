@@ -8,14 +8,22 @@
 import SwiftUI
 
 struct CardPaymentView: View {
+    let doctor: Doctor
+    let selectedDate: Date
+    let selectedTimeSlot: String
+    let patientName: String
+    let patientPhone: String
+    let location: String
     let totalAmount: Double
+    var onFlowComplete: (() -> Void)? = nil
+
     @Environment(\.dismiss) private var dismiss
 
     @State private var cardNumber = ""
     @State private var cardholderName = ""
     @State private var expiryDate = ""
     @State private var cvv = ""
-    @State private var navigateToConfirmation = false
+    @State private var navigateToProcessing = false
 
     private var isFormValid: Bool {
         let cleanedCardNumber = cardNumber.filter { $0.isNumber }
@@ -25,37 +33,24 @@ struct CardPaymentView: View {
                cvv.count == 3
     }
 
-    private var transactionID: String {
-        "TXN-\(Int.random(in: 10000...99999))"
-    }
-
-    private var currentDate: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d, yyyy"
-        return formatter.string(from: Date())
-    }
-
-    private var currentTime: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm a"
-        return formatter.string(from: Date())
-    }
-
     var body: some View {
         ZStack {
             NavigationLink(
-                destination: PaymentConfirmationView(
+                destination: CardProcessingView(
+                    doctor: doctor,
+                    selectedDate: selectedDate,
+                    selectedTimeSlot: selectedTimeSlot,
+                    patientName: patientName,
+                    patientPhone: patientPhone,
+                    location: location,
                     totalAmount: totalAmount,
-                    paymentMethod: "Credit/Debit Card",
-                    transactionID: transactionID,
-                    date: currentDate,
-                    time: currentTime
+                    onFlowComplete: onFlowComplete
                 ),
-                isActive: $navigateToConfirmation
+                isActive: $navigateToProcessing
             ) { EmptyView() }
 
             VStack(spacing: 0) {
-                // Top bar
+      
                 HStack {
                     Button(action: { dismiss() }) {
                         Image(systemName: "chevron.left")
@@ -77,7 +72,7 @@ struct CardPaymentView: View {
 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 28) {
-                        // Card preview
+                
                         VStack(alignment: .leading, spacing: 16) {
                             HStack {
                                 Text(lastFour)
@@ -127,6 +122,7 @@ struct CardPaymentView: View {
                         .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 4)
                         .padding(.horizontal, 24)
 
+                 
                         VStack(spacing: 20) {
                             // Card Number
                             VStack(alignment: .leading, spacing: 8) {
@@ -135,7 +131,7 @@ struct CardPaymentView: View {
                                     .foregroundColor(.gray)
                                 TextField("4242 4242 4242 4242", text: $cardNumber)
                                     .keyboardType(.numberPad)
-                                    .onChange(of: cardNumber) { newValue in
+                                    .onChange(of: cardNumber) { oldValue, newValue in
                                         let digits = newValue.filter { $0.isNumber }
                                         if digits.count > 16 {
                                             cardNumber = String(digits.prefix(16))
@@ -177,7 +173,7 @@ struct CardPaymentView: View {
                                         .foregroundColor(.gray)
                                     TextField("MM/YY", text: $expiryDate)
                                         .keyboardType(.numberPad)
-                                        .onChange(of: expiryDate) { newValue in
+                                        .onChange(of: expiryDate) { oldValue, newValue in
                                             let digits = newValue.filter { $0.isNumber }
                                             if digits.count > 4 {
                                                 expiryDate = String(digits.prefix(4))
@@ -203,7 +199,7 @@ struct CardPaymentView: View {
                                         .foregroundColor(.gray)
                                     TextField("123", text: $cvv)
                                         .keyboardType(.numberPad)
-                                        .onChange(of: cvv) { newValue in
+                                        .onChange(of: cvv) { oldValue, newValue in
                                             if newValue.count > 3 {
                                                 cvv = String(newValue.prefix(3))
                                             }
@@ -221,10 +217,11 @@ struct CardPaymentView: View {
                     }
                 }
 
+           
                 if isFormValid {
                     VStack {
                         Button(action: {
-                            navigateToConfirmation = true
+                            navigateToProcessing = true
                         }) {
                             Text("Pay \(String(format: "%.2f LKR", totalAmount))")
                                 .font(.headline)
@@ -246,7 +243,7 @@ struct CardPaymentView: View {
             .animation(.easeInOut, value: isFormValid)
         }
         .onAppear {
-            navigateToConfirmation = false
+            navigateToProcessing = false
         }
     }
 
@@ -259,6 +256,14 @@ struct CardPaymentView: View {
 
 #Preview {
     NavigationStack {
-        CardPaymentView(totalAmount: 2300.00)
+        CardPaymentView(
+            doctor: MockData.doctors[0],
+            selectedDate: Date(),
+            selectedTimeSlot: "01:00 PM",
+            patientName: "Peter John",
+            patientPhone: "+94 77 123 4567",
+            location: "Room 12, 1st Floor, Main Wing",
+            totalAmount: 2300.00
+        )
     }
 }

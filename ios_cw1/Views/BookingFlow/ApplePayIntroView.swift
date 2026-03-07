@@ -16,6 +16,7 @@ struct ApplePayIntroView: View {
     let patientPhone: String
     let location: String
     let totalAmount: Double
+    var onFlowComplete: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @State private var navigateToPayment = false
@@ -85,7 +86,8 @@ struct ApplePayIntroView: View {
                     patientName: patientName,
                     patientPhone: patientPhone,
                     location: location,
-                    totalAmount: totalAmount
+                    totalAmount: totalAmount,
+                    onFlowComplete: onFlowComplete
                 ),
                 isActive: $navigateToPayment
             ) { EmptyView() }

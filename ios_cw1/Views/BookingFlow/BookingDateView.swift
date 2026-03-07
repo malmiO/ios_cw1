@@ -9,6 +9,8 @@ import SwiftUI
 
 struct BookingDateView: View {
     let doctor: Doctor
+    var onFlowComplete: (() -> Void)? = nil
+
     @Environment(\.dismiss) private var dismiss
     @State private var selectedDate: Date? = nil
     @State private var currentMonth = Date()
@@ -33,7 +35,6 @@ struct BookingDateView: View {
         ZStack(alignment: .bottom) {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
-
                     HStack {
                         Button(action: { dismiss() }) {
                             Image(systemName: "chevron.left")
@@ -45,7 +46,6 @@ struct BookingDateView: View {
                             .font(.headline)
                             .fontWeight(.semibold)
                         Spacer()
-
                         Color.clear.frame(width: 44, height: 44)
                     }
                     .padding(.horizontal, 24)
@@ -66,7 +66,7 @@ struct BookingDateView: View {
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, -8)
-                    
+
                     // Select Date section
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Select Date")
@@ -74,11 +74,10 @@ struct BookingDateView: View {
                             .fontWeight(.semibold)
                             .padding(.horizontal, 24)
 
-                        // Month navigator
                         MonthNavigator(
                             currentMonth: $currentMonth,
-                            onPrev: {  },
-                            onNext: {  }
+                            onPrev: { },
+                            onNext: { }
                         )
 
                         // Horizontal date cards
@@ -106,7 +105,7 @@ struct BookingDateView: View {
 
             // Continue button
             VStack {
-                NavigationLink(destination: BookingTimeView(doctor: doctor, selectedDate: selectedDate ?? Date())) {
+                NavigationLink(destination: BookingTimeView(doctor: doctor, selectedDate: selectedDate ?? Date(), onFlowComplete: onFlowComplete)) {
                     Text("Continue")
                         .font(.headline)
                         .foregroundColor(.white)

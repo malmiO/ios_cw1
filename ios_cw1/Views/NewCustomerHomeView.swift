@@ -6,67 +6,79 @@ import SwiftUI
 
 struct NewCustomerHomeView: View {
     
+    var onBookingComplete: (() -> Void)? = nil
+
     @State private var selectedTab: Int = 0
     @State private var animatePulse: Bool = false
+    @State private var showBookingFlow = false
     
     var body: some View {
-        ZStack(alignment: .top) {
-            
-            //  Background
-            VStack(spacing: 0) {
+        NavigationStack {
+            ZStack(alignment: .top) {
                 
-                Color(.systemGroupedBackground)
-                
-                LinearGradient(
-                    colors: [
-                        Color.blue.opacity(0.35),
-                        Color.blue.opacity(0.20)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .frame(height: 420)
-                .clipShape(
-                    RoundedCorner(
-                        radius: 40,
-                        corners: [.topLeft, .topRight]
+                // Background
+                VStack(spacing: 0) {
+                    
+                    Color(.systemGroupedBackground)
+                    
+                    LinearGradient(
+                        colors: [
+                            Color.blue.opacity(0.35),
+                            Color.blue.opacity(0.20)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
                     )
-                )
-            }
-            .ignoresSafeArea()
-            
-            
-            // Scrollable Content
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 24) {
-                    
-                    Spacer()
-                        .frame(height: 30)
-                    
-                    quickServicesSection
-                    bookAppointmentCard
-                    topDoctorsSection
-                    
-                    Spacer(minLength: 160)
+                    .frame(height: 420)
+                    .clipShape(
+                        RoundedCorner(
+                            radius: 40,
+                            corners: [.topLeft, .topRight]
+                        )
+                    )
                 }
-                .padding(.horizontal, 20)
+                .ignoresSafeArea()
+                
+                // Scrollable Content
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 24) {
+                        
+                        Spacer()
+                            .frame(height: 30)
+                        
+                        quickServicesSection
+                        bookAppointmentCard
+                        topDoctorsSection
+                        
+                        Spacer(minLength: 160)
+                    }
+                    .padding(.horizontal, 20)
+                }
+                
+
+                HeaderView()
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 4)
+                    .background(Color.white)
             }
-            
-            
-            // Sticky Header
-            HeaderView()
-                .padding(.horizontal, 20)
-                .padding(.bottom, 4)
-                .background(Color.white)
+            .safeAreaInset(edge: .bottom) {
+                VStack(spacing: 8) {
+                    DirectionsBarView()
+                        .padding(.horizontal, 16)
+                    FloatingNavBarView(selectedTab: $selectedTab)
+                }
+            }
+            .onAppear { animatePulse = true }
         }
-        .safeAreaInset(edge: .bottom) {
-            VStack(spacing: 8) {
-                DirectionsBarView()
-                    .padding(.horizontal, 16)
-                FloatingNavBarView(selectedTab: $selectedTab)
+
+        .fullScreenCover(isPresented: $showBookingFlow) {
+            NavigationStack {
+                ChooseDoctorView(selectedTab: $selectedTab, onFlowComplete: {
+                    showBookingFlow = false
+                    onBookingComplete?()
+                })
             }
         }
-        .onAppear { animatePulse = true }
     }
 }
 
@@ -115,8 +127,10 @@ extension NewCustomerHomeView {
     
     var bookAppointmentCard: some View {
         VStack(spacing: 12) {
-            
-            Button(action: {}) {
+
+            Button(action: {
+                showBookingFlow = true
+            }) {
                 Text("Book Appointment")
                     .font(.headline)
                     .foregroundColor(.white)
@@ -180,3 +194,6 @@ extension NewCustomerHomeView {
     }
 }
 
+#Preview {
+    NewCustomerHomeView()
+}

@@ -13,6 +13,7 @@ struct AppointmentDetailsView: View {
     let selectedTimeSlot: String
     let patientName: String
     let patientPhone: String
+    var onFlowComplete: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
 
@@ -221,8 +222,8 @@ struct AppointmentDetailsView: View {
                         patientName: patientName,
                         patientPhone: patientPhone,
                         location: location,
-                        totalAmount: doctor.fee
-                    )
+                        totalAmount: doctor.fee,
+                        onFlowComplete: onFlowComplete                       )
                 ) {
                     Text("Proceed")
                         .font(.headline)

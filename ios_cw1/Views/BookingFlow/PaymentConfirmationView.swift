@@ -8,11 +8,20 @@
 import SwiftUI
 
 struct PaymentConfirmationView: View {
+    // Appointment details
+    let doctor: Doctor
+    let selectedDate: Date
+    let selectedTimeSlot: String
+    let patientName: String
+    let patientPhone: String
+    let location: String
     let totalAmount: Double
+    // Payment details
     let paymentMethod: String
     let transactionID: String
     let date: String
     let time: String
+    var onFlowComplete: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
 
@@ -20,7 +29,7 @@ struct PaymentConfirmationView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-        
+            // Top bar
             HStack {
                 Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
@@ -105,7 +114,6 @@ struct PaymentConfirmationView: View {
                     // Action buttons
                     VStack(spacing: 12) {
                         Button(action: {
-                            // Download receipt action
                             print("Download receipt tapped")
                         }) {
                             Label("Download Receipt", systemImage: "arrow.down.doc")
@@ -118,7 +126,6 @@ struct PaymentConfirmationView: View {
                         }
 
                         Button(action: {
-                            // Share details action
                             print("Share details tapped")
                         }) {
                             Label("Share Details", systemImage: "square.and.arrow.up")
@@ -130,9 +137,16 @@ struct PaymentConfirmationView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 20))
                         }
 
-                        Button(action: {
-                            dismiss()
-                        }) {
+                        NavigationLink(destination: AppointmentConfirmationView(
+                            doctor: doctor,
+                            selectedDate: selectedDate,
+                            selectedTimeSlot: selectedTimeSlot,
+                            patientName: patientName,
+                            patientPhone: patientPhone,
+                            location: location,
+                            totalAmount: totalAmount,
+                            onFlowComplete: onFlowComplete
+                        )) {
                             Text("View Appointment")
                                 .font(.headline)
                                 .foregroundColor(.blue)
@@ -169,6 +183,12 @@ struct DetailRow: View {
 #Preview {
     NavigationStack {
         PaymentConfirmationView(
+            doctor: MockData.doctors[0],
+            selectedDate: Date(),
+            selectedTimeSlot: "01:00 PM",
+            patientName: "Peter John",
+            patientPhone: "+94 77 123 4567",
+            location: "Room 12, 1st Floor, Main Wing",
             totalAmount: 2300.00,
             paymentMethod: "Apple Pay",
             transactionID: "TXN-88294",

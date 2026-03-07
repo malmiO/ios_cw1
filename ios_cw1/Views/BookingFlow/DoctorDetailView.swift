@@ -9,6 +9,8 @@ import SwiftUI
 
 struct DoctorDetailView: View {
     let doctor: Doctor
+    var onFlowComplete: (() -> Void)? = nil 
+
     @Environment(\.dismiss) private var dismiss
     @State private var showFullProfile = false
     @State private var showReviews = false
@@ -94,7 +96,7 @@ struct DoctorDetailView: View {
             .background(Color(.systemBackground))
 
             VStack {
-                NavigationLink(destination: BookingDateView(doctor: doctor)) {
+                NavigationLink(destination: BookingDateView(doctor: doctor, onFlowComplete: onFlowComplete)) {   // <-- Pass closure
                     Text("Book Appointment")
                         .font(.headline)
                         .foregroundColor(.white)

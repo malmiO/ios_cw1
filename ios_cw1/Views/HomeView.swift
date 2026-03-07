@@ -11,6 +11,7 @@ struct HomeView: View {
     
     @State private var selectedTab: Int = 0
     @State private var animatePulse: Bool = false
+    @State private var showBookingFlow = false   
     
     var body: some View {
         NavigationStack {
@@ -66,6 +67,13 @@ struct HomeView: View {
                         .padding(.horizontal, 16)
                     FloatingNavBarView(selectedTab: $selectedTab)
                 }
+            }
+        }
+        .fullScreenCover(isPresented: $showBookingFlow) {
+            NavigationStack {
+                ChooseDoctorView(selectedTab: $selectedTab, onFlowComplete: {
+                    showBookingFlow = false
+                })
             }
         }
     }
@@ -128,7 +136,9 @@ extension HomeView {
     var bookAppointmentCard: some View {
         VStack(spacing: 12) {
             
-            NavigationLink(destination: ChooseDoctorView(selectedTab: $selectedTab)) {
+            Button(action: {
+                showBookingFlow = true
+            }) {
                 Text("Book Appointment")
                     .font(.headline)
                     .foregroundColor(.white)

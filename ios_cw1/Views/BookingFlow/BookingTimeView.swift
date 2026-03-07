@@ -10,39 +10,40 @@ import SwiftUI
 struct BookingTimeView: View {
     let doctor: Doctor
     let selectedDate: Date
-    
+    var onFlowComplete: (() -> Void)? = nil
+
     @Environment(\.dismiss) private var dismiss
     @State private var selectedTimeSlot: String? = nil
     @State private var displayedMonth: Date = Date()
     @State private var navigateToConfirm = false
-    
+
     private func hourFromTime(_ time: String) -> Int? {
         let components = time.split(separator: ":")
         guard let hourStr = components.first, let hour = Int(hourStr) else { return nil }
         return hour
     }
-    
+
     private var morningSlots: [String] {
         doctor.timeSlots.filter { slot in
             guard let hour = hourFromTime(slot) else { return false }
             return hour >= 0 && hour < 12
         }.sorted()
     }
-    
+
     private var afternoonSlots: [String] {
         doctor.timeSlots.filter { slot in
             guard let hour = hourFromTime(slot) else { return false }
             return hour >= 12 && hour < 17
         }.sorted()
     }
-    
+
     private var eveningSlots: [String] {
         doctor.timeSlots.filter { slot in
             guard let hour = hourFromTime(slot) else { return false }
             return hour >= 17
         }.sorted()
     }
-    
+
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -57,7 +58,7 @@ struct BookingTimeView: View {
             .padding(.horizontal, 20)
             .padding(.top, 16)
             .padding(.bottom, 8)
-            
+
             HStack(spacing: 12) {
                 // Doctor image
                 Group {
@@ -75,7 +76,7 @@ struct BookingTimeView: View {
                 }
                 .frame(width: 48, height: 48)
                 .clipShape(Circle())
-                
+
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Dr. \(doctor.fullName)")
                         .font(.headline)
@@ -83,9 +84,9 @@ struct BookingTimeView: View {
                         .font(.subheadline)
                         .foregroundStyle(.gray)
                 }
-                
+
                 Spacer()
-                
+
                 // Edit button
                 Button("Edit") {
                     dismiss()
@@ -96,7 +97,7 @@ struct BookingTimeView: View {
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 12)
-            
+
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 28) {
                     // Selected Date section
@@ -105,7 +106,7 @@ struct BookingTimeView: View {
                             .font(.title3)
                             .fontWeight(.semibold)
                             .padding(.horizontal, 20)
-                        
+
                         // Month navigator
                         HStack {
                             Button(action: {}) {
@@ -124,7 +125,7 @@ struct BookingTimeView: View {
                             }
                         }
                         .padding(.horizontal, 20)
-                        
+
                         // Horizontal date cards
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
@@ -140,7 +141,7 @@ struct BookingTimeView: View {
                             .padding(.horizontal, 20)
                         }
                     }
-                    
+
                     // Time slots sections
                     if !morningSlots.isEmpty {
                         TimeSlotSection(title: "Morning", slotCount: morningSlots.count, slots: morningSlots, selectedSlot: $selectedTimeSlot)
@@ -154,7 +155,7 @@ struct BookingTimeView: View {
                 }
                 .padding(.bottom, 140)
             }
-            
+
             // Confirm button
             VStack {
                 Button(action: {
@@ -175,12 +176,13 @@ struct BookingTimeView: View {
                 .padding(.vertical, 16)
                 .background(Color(.systemBackground))
                 .shadow(color: .black.opacity(0.12), radius: 10, y: -6)
-                
+
                 NavigationLink(
                     destination: ConfirmDetailsView(
                         doctor: doctor,
                         selectedDate: selectedDate,
-                        selectedTimeSlot: selectedTimeSlot ?? ""
+                        selectedTimeSlot: selectedTimeSlot ?? "",
+                        onFlowComplete: onFlowComplete
                     ),
                     isActive: $navigateToConfirm
                 ) {
@@ -190,7 +192,7 @@ struct BookingTimeView: View {
         }
         .navigationBarHidden(true)
     }
-    
+
     private func generateDateCards() -> [(day: Int, weekday: String, date: Date)] {
         let calendar = Calendar.current
         var result: [(Int, String, Date)] = []
@@ -210,13 +212,13 @@ struct TimeSlotSection: View {
     let slotCount: Int
     let slots: [String]
     @Binding var selectedSlot: String?
-    
+
     private var rows: [[String]] {
         stride(from: 0, to: slots.count, by: 3).map {
             Array(slots[$0..<min($0+3, slots.count)])
         }
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -228,7 +230,7 @@ struct TimeSlotSection: View {
                     .foregroundStyle(.gray)
             }
             .padding(.horizontal, 20)
-            
+
             ForEach(rows, id: \.self) { row in
                 HStack(spacing: 12) {
                     ForEach(row, id: \.self) { time in
@@ -250,7 +252,7 @@ struct TimeSlotChip: View {
     let time: String
     let isSelected: Bool
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Text(time)

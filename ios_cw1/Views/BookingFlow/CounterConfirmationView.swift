@@ -15,6 +15,7 @@ struct CounterConfirmationView: View {
     let patientPhone: String
     let location: String
     let totalAmount: Double
+    var onFlowComplete: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
 
@@ -180,7 +181,8 @@ struct CounterConfirmationView: View {
             // Done button
             VStack {
                 Button(action: {
-                    dismiss()
+                    print("onFlowComplete is \(onFlowComplete == nil ? "nil" : "set")")
+                    onFlowComplete?()
                 }) {
                     Text("Done")
                         .font(.headline)
