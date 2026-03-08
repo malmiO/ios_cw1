@@ -352,6 +352,9 @@ extension ServicesView {
         case "Other Tests":
             return AnyView(BookTestView(initialCategory: .urine))
             
+        case "Pharmacy":
+            return AnyView(PharmacyView())
+            
         default:
             return AnyView(BookTestView())
         }
