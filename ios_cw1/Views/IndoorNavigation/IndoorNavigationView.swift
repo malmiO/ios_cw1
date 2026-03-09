@@ -144,6 +144,22 @@ struct NavigationRoute {
                     NavigationStep(instruction: "Elevator is at the end", stepNumber: 4, distance: 15)
                 ],
                 pathLocations: ["X-Ray", "CT Scan", "Ultrasound", "Elevator"]
+            ),
+            
+            NavigationRoute(
+                start: "MRI Scan",
+                end: "Restroom",
+                floor: "Floor 3",
+                distance: 65,
+                estimatedTime: 3,
+                steps: [
+                    NavigationStep(instruction: "Exit MRI Scan room", stepNumber: 1, distance: 0),
+                    NavigationStep(instruction: "Turn left and walk along the corridor", stepNumber: 2, distance: 20),
+                    NavigationStep(instruction: "Continue past Blood Bank and CT Scan", stepNumber: 3, distance: 25),
+                    NavigationStep(instruction: "Turn left at Pathology", stepNumber: 4, distance: 15),
+                    NavigationStep(instruction: "Restroom is on your left", stepNumber: 5, distance: 5)
+                ],
+                pathLocations: ["MRI Scan", "Blood Bank", "CT Scan", "Pathology", "Restroom"]
             )
         ]
     }
@@ -765,6 +781,43 @@ struct IndoorNavigationView: View {
                         path.addLine(to: CGPoint(x: width * 0.35, y: height * 0.45))
                         
                         // Continue down to Pediatrics
+                        path.addLine(to: end)
+                    }
+                    .stroke(
+                        Color.blue,
+                        style: StrokeStyle(lineWidth: 4, lineCap: .round)
+                    )
+                }
+            }
+            
+            if (route.start == "MRI Scan" && route.end == "Restroom") ||
+               (route.start == "Restroom" && route.end == "MRI Scan") {
+                
+                if let start = positions["MRI Scan"],
+                   let end = positions["Restroom"] {
+                    
+                    Path { path in
+                        
+                        path.move(to: start)
+                        
+                        // Go left along the top corridor
+                        path.addLine(to: CGPoint(x: width * 0.5, y: height * 0.15))
+                        
+                        // Continue left
+                        path.addLine(to: CGPoint(x: width * 0.35, y: height * 0.15))
+                        
+                        // Go down to Blood Bank level
+                        path.addLine(to: CGPoint(x: width * 0.35, y: height * 0.40))
+                        
+                        // Continue down to CT Scan level
+                        path.addLine(to: CGPoint(x: width * 0.35, y: height * 0.58))
+                        
+                        // Continue down to Pathology level
+                        path.addLine(to: CGPoint(x: width * 0.35, y: height * 0.72))
+                        
+                        // Turn left to Restroom
+                        path.addLine(to: CGPoint(x: width * 0.25, y: height * 0.72))
+                        
                         path.addLine(to: end)
                     }
                     .stroke(
