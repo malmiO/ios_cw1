@@ -14,59 +14,65 @@ struct HomeView: View {
     @State private var animatePulse: Bool = false
     
     var body: some View {
-        ZStack(alignment: .bottom) {
-            // Background
-            VStack(spacing: 0) {
-                Color(.systemGroupedBackground)
+        NavigationStack {
+            ZStack(alignment: .top) {
                 
-                LinearGradient(
-                    colors: [
-                        Color.blue.opacity(0.35),
-                        Color.blue.opacity(0.20)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .frame(height: 420)
-                .clipShape(
-                    RoundedCorner(radius: 40,
-                                  corners: [.topLeft, .topRight])
-                )
-            }
-            .ignoresSafeArea()
-            
-            
-            // SCROLLABLE CONTENT
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 24) {
+                // Background
+                VStack(spacing: 0) {
+                    Color(.systemGroupedBackground)
                     
-                    Spacer()
-                        .frame(height: 30) // content below header
-                    
-                    activeQueueCard
-                    quickServicesSection
-                    bookAppointmentCard
-                    topDoctorsSection
-                    
-                    Spacer(minLength: 160)
+                    LinearGradient(
+                        colors: [
+                            Color.blue.opacity(0.35),
+                            Color.blue.opacity(0.20)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .frame(height: 420)
+                    .clipShape(
+                        RoundedCorner(radius: 40,
+                                      corners: [.topLeft, .topRight])
+                    )
                 }
-                .padding(.horizontal, 20)
-            }
-            
-            
-            // header - sticky
-            HeaderView()
-                .padding(.top, 0)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 0.5)
+                .ignoresSafeArea()
+                
+                
+                // SCROLLABLE CONTENT
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 24) {
+                        
+                        // Space for header (header height + safe area + padding)
+                        Color.clear
+                            .frame(height: 120)
+                        
+                        activeQueueCard
+                        quickServicesSection
+                        bookAppointmentCard
+                        topDoctorsSection
+                        
+                        Spacer(minLength: 160)
+                    }
+                    .padding(.horizontal, 20)
+                }
+                
+                
+                // header - sticky at top with safe area
+                VStack(spacing: 0) {
+                    HeaderView()
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 10)
+                }
                 .background(Color.white)
-        }
-        .safeAreaInset(edge: .bottom) {
-            VStack(spacing: 8) {
-                DirectionsBarView()
-                    .padding(.horizontal, 16)
-                FloatingNavBarView(selectedTab: $selectedTab)
             }
+            .safeAreaInset(edge: .bottom) {
+                VStack(spacing: 8) {
+                    DirectionsBarView()
+                        .padding(.horizontal, 16)
+                    FloatingNavBarView(selectedTab: $selectedTab)
+                }
+            }
+            .navigationBarHidden(true)
         }
     }
 }
@@ -162,7 +168,31 @@ extension HomeView {
             HStack(spacing: 0) {
                 quickServiceItem(icon: "stethoscope", title: "Find\nDoctor", color: .blue)
                 quickServiceItem(icon: "cross.case.fill", title: "Lab\nReports", color: .green)
-                quickServiceItem(icon: "pills.fill", title: "Pharmacy", color: .orange)
+                
+                // Pharmacy with navigation
+                NavigationLink(destination: PharmacyView()) {
+                    VStack(spacing: 6) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.orange.opacity(0.12))
+                                .frame(width: 50, height: 50)
+                            
+                            Image(systemName: "pills.fill")
+                                .font(.system(size: 20))
+                                .foregroundColor(.orange)
+                        }
+                        
+                        Text("Pharmacy")
+                            .font(.system(size: 10))
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.plain)
+                
                 quickServiceItem(icon: "waveform.path.ecg", title: "Scans", color: .purple)
             }
         }

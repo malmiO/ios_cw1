@@ -29,7 +29,7 @@ class LoginViewModel: NSObject, ObservableObject {
         checkBiometricAvailability()
     }
     
-    // MARK: - Phone Verification
+    //  Phone Verification
     
     // List of registered numbers
     private let registeredNumbers = [
@@ -89,7 +89,7 @@ class LoginViewModel: NSObject, ObservableObject {
         isAuthenticated = true
     }
     
-    // MARK: - Face ID Authentication
+    // Face ID Authentication
     func authenticateWithFaceID() {
         let context = LAContext()
         var error: NSError?

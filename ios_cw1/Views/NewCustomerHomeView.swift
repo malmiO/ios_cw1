@@ -6,79 +6,67 @@ import SwiftUI
 
 struct NewCustomerHomeView: View {
     
-    var onBookingComplete: (() -> Void)? = nil
-
     @State private var selectedTab: Int = 0
     @State private var animatePulse: Bool = false
-    @State private var showBookingFlow = false
     
     var body: some View {
-        NavigationStack {
-            ZStack(alignment: .top) {
+        ZStack(alignment: .top) {
+            
+            //  Background
+            VStack(spacing: 0) {
                 
-                // Background
-                VStack(spacing: 0) {
-                    
-                    Color(.systemGroupedBackground)
-                    
-                    LinearGradient(
-                        colors: [
-                            Color.blue.opacity(0.35),
-                            Color.blue.opacity(0.20)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
+                Color(.systemGroupedBackground)
+                
+                LinearGradient(
+                    colors: [
+                        Color.blue.opacity(0.35),
+                        Color.blue.opacity(0.20)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .frame(height: 420)
+                .clipShape(
+                    RoundedCorner(
+                        radius: 40,
+                        corners: [.topLeft, .topRight]
                     )
-                    .frame(height: 420)
-                    .clipShape(
-                        RoundedCorner(
-                            radius: 40,
-                            corners: [.topLeft, .topRight]
-                        )
-                    )
-                }
-                .ignoresSafeArea()
-                
-                // Scrollable Content
-                ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 24) {
-                        
-                        Spacer()
-                            .frame(height: 30)
-                        
-                        quickServicesSection
-                        bookAppointmentCard
-                        topDoctorsSection
-                        
-                        Spacer(minLength: 160)
-                    }
-                    .padding(.horizontal, 20)
-                }
-                
-
-                HeaderView()
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 4)
-                    .background(Color.white)
+                )
             }
-            .safeAreaInset(edge: .bottom) {
-                VStack(spacing: 8) {
-                    DirectionsBarView()
-                        .padding(.horizontal, 16)
-                    FloatingNavBarView(selectedTab: $selectedTab)
+            .ignoresSafeArea()
+            
+            
+            // Scrollable Content
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 24) {
+                    
+                    Spacer()
+                        .frame(height: 30)
+                    
+                    quickServicesSection
+                    bookAppointmentCard
+                    topDoctorsSection
+                    
+                    Spacer(minLength: 160)
                 }
+                .padding(.horizontal, 20)
             }
-            .onAppear { animatePulse = true }
+            
+            
+            // Sticky Header
+            HeaderView()
+                .padding(.horizontal, 20)
+                .padding(.bottom, 4)
+                .background(Color.white)
         }
-
-        .fullScreenCover(isPresented: $showBookingFlow) {
-            NavigationStack {
-                ChooseDoctorView(selectedTab: $selectedTab, onFlowComplete: {
-                    showBookingFlow = false
-                    onBookingComplete?()
-                })
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: 8) {
+                DirectionsBarView()
+                    .padding(.horizontal, 16)
+                FloatingNavBarView(selectedTab: $selectedTab)
             }
         }
+        .onAppear { animatePulse = true }
     }
 }
 
