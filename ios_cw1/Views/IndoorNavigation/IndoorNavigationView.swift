@@ -43,6 +43,20 @@ struct NavigationRoute {
             
             NavigationRoute(
                 start: "Reception",
+                end: "Emergency Dept",
+                floor: "Floor 1",
+                distance: 40,
+                estimatedTime: 2,
+                steps: [
+                    NavigationStep(instruction: "Start from Reception desk", stepNumber: 1, distance: 0),
+                    NavigationStep(instruction: "Walk down the main corridor", stepNumber: 2, distance: 20),
+                    NavigationStep(instruction: "Emergency Department is on your left", stepNumber: 3, distance: 20)
+                ],
+                pathLocations: ["Reception", "Emergency Dept"]
+            ),
+            
+            NavigationRoute(
+                start: "Reception",
                 end: "Elevator",
                 floor: "Floor 1",
                 distance: 50,
@@ -404,16 +418,19 @@ struct IndoorNavigationView: View {
                                     Button("Floor 1") {
                                         withAnimation {
                                             selectedFloor = "Floor 1"
+                                            resetInvalidLocations()
                                         }
                                     }
                                     Button("Floor 2") {
                                         withAnimation {
                                             selectedFloor = "Floor 2"
+                                            resetInvalidLocations()
                                         }
                                     }
                                     Button("Floor 3") {
                                         withAnimation {
                                             selectedFloor = "Floor 3"
+                                            resetInvalidLocations()
                                         }
                                     }
                                 } label: {
@@ -686,6 +703,31 @@ struct IndoorNavigationView: View {
                 }
             }
             
+            if route.start == "Reception" && route.end == "Emergency Dept" {
+                
+                if let start = positions["Reception"],
+                   let end = positions["Emergency Dept"] {
+                    
+                    Path { path in
+                        
+                        path.move(to: start)
+                        
+                        // Go down from Reception
+                        path.addLine(to: CGPoint(x: width * 0.5, y: height * 0.35))
+                        
+                        // Turn left towards Emergency Dept
+                        path.addLine(to: CGPoint(x: width * 0.35, y: height * 0.35))
+                        
+                        // Go down to Emergency Dept
+                        path.addLine(to: end)
+                    }
+                    .stroke(
+                        Color.blue,
+                        style: StrokeStyle(lineWidth: 4, lineCap: .round)
+                    )
+                }
+            }
+            
             if let start = positions[route.start] {
                 Circle()
                     .fill(Color.blue)
@@ -835,6 +877,77 @@ struct IndoorNavigationView: View {
             
         default:
             return [:]
+        }
+    }
+    
+    // Helper function to check if a location exists on a specific floor
+    private func isLocationOnFloor(_ locationName: String, floor: String) -> Bool {
+        // Temporarily get locations for the specified floor
+        let currentSelectedFloor = selectedFloor
+        let locations = getLocationPositionsForFloor(floor: floor, width: 100, height: 100)
+        return locations.keys.contains(locationName)
+    }
+    
+    // Helper function to get location positions for a specific floor
+    private func getLocationPositionsForFloor(floor: String, width: CGFloat, height: CGFloat) -> [String: CGPoint] {
+        switch floor {
+        case "Floor 1":
+            return [
+                "Reception": CGPoint(x: width * 0.5, y: height * 0.15),
+                "Registration": CGPoint(x: width * 0.65, y: height * 0.15),
+                "Records": CGPoint(x: width * 0.82, y: height * 0.15),
+                "Waiting Area": CGPoint(x: width * 0.18, y: height * 0.32),
+                "Restroom": CGPoint(x: width * 0.18, y: height * 0.50),
+                "Emergency Dept": CGPoint(x: width * 0.35, y: height * 0.50),
+                "Nurse Stn": CGPoint(x: width * 0.50, y: height * 0.40),
+                "Elevator": CGPoint(x: width * 0.82, y: height * 0.50),
+                "Pharmacy": CGPoint(x: width * 0.50, y: height * 0.88),
+                "Billing": CGPoint(x: width * 0.82, y: height * 0.80)
+            ]
+        case "Floor 2":
+            return [
+                "Room 201": CGPoint(x: width * 0.18, y: height * 0.15),
+                "Room 202": CGPoint(x: width * 0.35, y: height * 0.15),
+                "Room 203": CGPoint(x: width * 0.52, y: height * 0.15),
+                "Vitals": CGPoint(x: width * 0.70, y: height * 0.15),
+                "Cardiology": CGPoint(x: width * 0.35, y: height * 0.40),
+                "Nurses' Stn": CGPoint(x: width * 0.50, y: height * 0.32),
+                "Pediatrics": CGPoint(x: width * 0.35, y: height * 0.58),
+                "Restroom": CGPoint(x: width * 0.18, y: height * 0.50),
+                "Elevator": CGPoint(x: width * 0.82, y: height * 0.50),
+                "Neurology": CGPoint(x: width * 0.50, y: height * 0.72),
+                "Waiting Area": CGPoint(x: width * 0.82, y: height * 0.72),
+                "Orthopedics": CGPoint(x: width * 0.35, y: height * 0.88),
+                "Records": CGPoint(x: width * 0.70, y: height * 0.88)
+            ]
+        case "Floor 3":
+            return [
+                "Main Lab": CGPoint(x: width * 0.25, y: height * 0.15),
+                "X-Ray": CGPoint(x: width * 0.50, y: height * 0.15),
+                "MRI Scan": CGPoint(x: width * 0.75, y: height * 0.15),
+                "Records": CGPoint(x: width * 0.88, y: height * 0.30),
+                "Blood Bank": CGPoint(x: width * 0.35, y: height * 0.40),
+                "Sample Room": CGPoint(x: width * 0.65, y: height * 0.40),
+                "CT Scan": CGPoint(x: width * 0.35, y: height * 0.58),
+                "Ultrasound": CGPoint(x: width * 0.50, y: height * 0.50),
+                "Elevator": CGPoint(x: width * 0.82, y: height * 0.58),
+                "Pathology": CGPoint(x: width * 0.50, y: height * 0.72),
+                "Restroom": CGPoint(x: width * 0.18, y: height * 0.72),
+                "Cafeteria": CGPoint(x: width * 0.35, y: height * 0.88),
+                "Billing": CGPoint(x: width * 0.70, y: height * 0.88)
+            ]
+        default:
+            return [:]
+        }
+    }
+    
+    // Helper function to reset locations if they don't exist on the selected floor
+    private func resetInvalidLocations() {
+        if !startLocation.isEmpty && !isLocationOnFloor(startLocation, floor: selectedFloor) {
+            startLocation = ""
+        }
+        if !destination.isEmpty && !isLocationOnFloor(destination, floor: selectedFloor) {
+            destination = ""
         }
     }
     
