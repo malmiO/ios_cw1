@@ -70,12 +70,12 @@ struct ServicesView: View {
             }
             
             // Sticky header area (notification bar + header)
-            VStack(spacing: 0) {
+            /*VStack(spacing: 0) {
                 
                 HeaderView(title: "ClinicFlow Services", searchPlaceholder: "Search Labs/Scans")
                     .padding(.horizontal, 20)
                     .padding(.bottom, 8)
-            }
+            }*/
             .background(Color(red: 0.82, green: 0.88, blue: 0.96))
         }
         .safeAreaInset(edge: .bottom) {
