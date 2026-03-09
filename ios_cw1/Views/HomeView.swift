@@ -14,9 +14,8 @@ struct HomeView: View {
     @State private var animatePulse: Bool = false
     
     var body: some View {
-        ZStack(alignment: .top) {
-            
-            // Background 
+        ZStack(alignment: .bottom) {
+            // Background
             VStack(spacing: 0) {
                 Color(.systemGroupedBackground)
                 
