@@ -67,29 +67,6 @@ struct NavigationARView: View {
                         
                         Spacer()
                         
-//                        // AR Status Indicator
-//                        HStack(spacing: 6) {
-//                            Circle()
-//                                .fill(Color.green)
-//                                .frame(width: 8, height: 8)
-//                                .overlay(
-//                                    Circle()
-//                                        .stroke(Color.green, lineWidth: 1)
-//                                        .scaleEffect(pulseScale)
-//                                        .opacity(2 - pulseScale)
-//                                )
-//                            Text("AR ACTIVE")
-//                                .font(.system(size: 11, weight: .bold))
-//                                .foregroundColor(.green)
-//                        }
-//                        .padding(.horizontal, 12)
-//                        .padding(.vertical, 6)
-//                        .background(Color.white)
-//                        .cornerRadius(20)
-//                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
-                        
-                        Spacer()
-                        
                         // Floor Indicator
                         Text(route.floor)
                             .font(.system(size: 12, weight: .semibold))
