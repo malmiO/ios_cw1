@@ -80,7 +80,7 @@ struct LabVisitDetailsView: View {
             .presentationDetents([.height(300)])
         }
         .sheet(isPresented: $showPaymentSheet) {
-            PaymentConfirmationSheet(
+            LabPaymentConfirmationView(
                 totalPrice: viewModel.totalPrice,
                 isPresented: $showPaymentSheet
             )

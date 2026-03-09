@@ -117,7 +117,7 @@ extension NewCustomerHomeView {
         VStack(spacing: 12) {
 
             Button(action: {
-                showBookingFlow = true
+          //      showBookingFlow = true
             }) {
                 Text("Book Appointment")
                     .font(.headline)

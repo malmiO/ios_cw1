@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PaymentConfirmationSheet: View {
+struct LabPaymentConfirmationView: View {
     @Binding var isPresented: Bool
     @StateObject private var viewModel: PaymentViewModel
     
@@ -983,7 +983,7 @@ struct DiscountCodeSheet: View {
 
 
 #Preview {
-    PaymentConfirmationSheet(
+    LabPaymentConfirmationView(
         totalPrice: 1500.00,
         isPresented: .constant(true)
     )
