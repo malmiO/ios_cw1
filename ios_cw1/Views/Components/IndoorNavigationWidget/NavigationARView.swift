@@ -55,8 +55,7 @@ struct NavigationARView: View {
                             HStack(spacing: 6) {
                                 Image(systemName: "chevron.left")
                                     .font(.system(size: 14, weight: .semibold))
-                                Text("Back")
-                                    .font(.system(size: 14, weight: .semibold))
+                                
                             }
                             .foregroundColor(.blue)
                             .padding(.horizontal, 12)
@@ -68,26 +67,26 @@ struct NavigationARView: View {
                         
                         Spacer()
                         
-                        // AR Status Indicator
-                        HStack(spacing: 6) {
-                            Circle()
-                                .fill(Color.green)
-                                .frame(width: 8, height: 8)
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.green, lineWidth: 1)
-                                        .scaleEffect(pulseScale)
-                                        .opacity(2 - pulseScale)
-                                )
-                            Text("AR ACTIVE")
-                                .font(.system(size: 11, weight: .bold))
-                                .foregroundColor(.green)
-                        }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.white)
-                        .cornerRadius(20)
-                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+//                        // AR Status Indicator
+//                        HStack(spacing: 6) {
+//                            Circle()
+//                                .fill(Color.green)
+//                                .frame(width: 8, height: 8)
+//                                .overlay(
+//                                    Circle()
+//                                        .stroke(Color.green, lineWidth: 1)
+//                                        .scaleEffect(pulseScale)
+//                                        .opacity(2 - pulseScale)
+//                                )
+//                            Text("AR ACTIVE")
+//                                .font(.system(size: 11, weight: .bold))
+//                                .foregroundColor(.green)
+//                        }
+//                        .padding(.horizontal, 12)
+//                        .padding(.vertical, 6)
+//                        .background(Color.white)
+//                        .cornerRadius(20)
+//                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
                         
                         Spacer()
                         
@@ -252,8 +251,7 @@ struct NavigationARView: View {
                     HStack(spacing: 12) {
                         Image(systemName: "mappin.circle.fill")
                             .font(.system(size: 20))
-                            .foregroundColor(.red)
-                            .scaleEffect(pulseScale)
+                            .foregroundColor(.blue)
                         
                         VStack(alignment: .leading, spacing: 2) {
                             Text("DESTINATION")
