@@ -481,6 +481,7 @@ struct IndoorNavigationView: View {
                                     RoundedRectangle(cornerRadius: 12)
                                         .fill(Color(.systemGray6))
                                     
+                                    // Always show the map view here
                                     drawFloorMap(width: geo.size.width, height: geo.size.height)
                                 }
                             }
@@ -598,6 +599,11 @@ struct IndoorNavigationView: View {
         .sheet(isPresented: $showNavigationSteps) {
             if let route = currentRoute {
                 NavigationStepsView(route: route)
+            }
+        }
+        .fullScreenCover(isPresented: $isARMode) {
+            if let route = currentRoute {
+                NavigationARView(route: route)
             }
         }
     }
