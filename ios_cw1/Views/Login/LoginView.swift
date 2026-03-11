@@ -66,7 +66,7 @@ struct LoginView: View {
                     // White card background
                     VStack(spacing: 25) {
                         // Welcome Back title - add top padding to account for button
-                        VStack(spacing: 8) {
+                        VStack(spacing: 5) {
                             Text("Welcome Back")
                                 .font(.system(size: 36, weight: .bold))
                                 .foregroundColor(.black)
@@ -75,7 +75,7 @@ struct LoginView: View {
                                 .font(.system(size: 16))
                                 .foregroundColor(.gray)
                         }
-                        .padding(.top, 65)
+                        .padding(.top, 40)
                     
                     // Phone number input
                     HStack(spacing: 0) {
@@ -230,19 +230,19 @@ struct LoginView: View {
                 )
                 
                 // Continue as Guest button - positioned at top overlapping the card
-                Button(action: {
-                    viewModel.continueAsGuest()
-                }) {
-                    Text("Continue as a Guest")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(Color(red: 0.3, green: 0.5, blue: 0.8))
-                        .padding(.horizontal, 30)
-                        .padding(.vertical, 12)
-                        .background(Color.white)
-                        .cornerRadius(25)
-                        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
-                }
-                .offset(y: -25)
+//                Button(action: {
+//                    viewModel.continueAsGuest()
+//                }) {
+//                    Text("Continue as a Guest")
+//                        .font(.system(size: 16, weight: .medium))
+//                        .foregroundColor(Color(red: 0.3, green: 0.5, blue: 0.8))
+//                        .padding(.horizontal, 30)
+//                        .padding(.vertical, 12)
+//                        .background(Color.white)
+//                        .cornerRadius(25)
+//                        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+//                }
+               .offset(y: -25)
             }
             }
             .ignoresSafeArea(edges: .bottom)
